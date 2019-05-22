@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
+import ohm.softa.a08.services.OpenMensaAPIService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import retrofit2.Call;
@@ -74,14 +75,8 @@ public class MainController implements Initializable {
 		meals = FXCollections.observableArrayList();
 		gson = new Gson();
 
-		/* initialize Retrofit instance */
-		var retrofit = new Retrofit.Builder()
-			.addConverterFactory(GsonConverterFactory.create(gson))
-			.baseUrl("http://openmensa.org/api/v2/")
-			.build();
-
 		/* create OpenMensaAPI instance */
-		api = retrofit.create(OpenMensaAPI.class);
+		api = OpenMensaAPIService.getInstance();
 	}
 
 	/**
@@ -94,7 +89,14 @@ public class MainController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		mealsListView.setItems(meals);
-		filterChoiceBox.setItems(FXCollections.observableList(Arrays.asList(gson.fromJson(new InputStreamReader(getClass().getResourceAsStream("/filters.json")), String[].class))));
+		filterChoiceBox.setItems(
+			FXCollections.observableList(
+				Arrays.asList(
+					gson.fromJson(
+						new InputStreamReader(getClass().getResourceAsStream("/filters.json")), String[].class)
+				)
+			)
+		);
 		doGetMeals();
 	}
 
@@ -112,10 +114,10 @@ public class MainController implements Initializable {
 					if (!response.isSuccessful() || response.body() == null) {
 						logger.error(String.format("Got response with not successfull code %d", response.code()));
 
-							var alert = new Alert(Alert.AlertType.ERROR);
-							alert.setHeaderText("Unsuccessful HTTP call");
-							alert.setContentText("Failed to get meals from OpenMensaAPI");
-							alert.show();
+						var alert = new Alert(Alert.AlertType.ERROR);
+						alert.setHeaderText("Unsuccessful HTTP call");
+						alert.setContentText("Failed to get meals from OpenMensaAPI");
+						alert.show();
 
 						return;
 					}
