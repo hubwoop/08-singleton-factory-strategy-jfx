@@ -15,15 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MealsFactoryTests {
 
-	private static HashMap<String, Class> filterStragyKeyAndExpectedType;
+	private static HashMap<String, Class> filterStrategyKeyAndExpectedType;
 
 	@BeforeAll
 	static void setup() {
-		filterStragyKeyAndExpectedType = new HashMap<>();
-		filterStragyKeyAndExpectedType.put("Vegetarian", CategoryFilter.class);
-		filterStragyKeyAndExpectedType.put("No soy", NotesFilter.class);
-		filterStragyKeyAndExpectedType.put("No pork", CategoryFilter.class);
-		filterStragyKeyAndExpectedType.put("All", NoFilter.class);
+		filterStrategyKeyAndExpectedType = new HashMap<>();
+		filterStrategyKeyAndExpectedType.put("Vegetarian", CategoryFilter.class);
+		filterStrategyKeyAndExpectedType.put("No soy", NotesFilter.class);
+		filterStrategyKeyAndExpectedType.put("No pork", CategoryFilter.class);
+		filterStrategyKeyAndExpectedType.put("All", NoFilter.class);
 	}
 
 	@Test
@@ -52,7 +52,7 @@ class MealsFactoryTests {
 
 	@Test
 	void testGetStrategyThroughSwitch() {
-		filterStragyKeyAndExpectedType.forEach((strategy, expectedType) ->
+		filterStrategyKeyAndExpectedType.forEach((strategy, expectedType) ->
 			assertTrue(expectedType.isInstance(MealFilterFactory.getStrategyThroughSwitch(strategy)))
 		);
 	}
