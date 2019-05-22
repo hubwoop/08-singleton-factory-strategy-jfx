@@ -2,18 +2,28 @@ package ohm.softa.a08.filtering;
 
 import ohm.softa.a08.model.Meal;
 
-import java.util.List;
+import java.util.Arrays;
+
 
 public class CategoryFilter extends FilterBase {
 
-	@Override
-	protected boolean include(Meal m) {
-		return false;
+	private boolean include;
+	private String[] categories;
+
+	public CategoryFilter(boolean include, String... categories) {
+		this.include = include;
+		this.categories = categories;
 	}
 
 	@Override
-	public List<Meal> filter(List<Meal> meals) {
-		return null;
+	protected boolean include(Meal m) {
+		// ok if any category matches
+		if (include)
+			return Arrays.stream(categories)
+				.anyMatch(s -> s.equals(m.getCategory().toLowerCase()));
+		else
+			return Arrays.stream(categories)
+				.noneMatch(s -> s.equals(m.getCategory().toLowerCase()));
 	}
 
 }

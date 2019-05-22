@@ -2,16 +2,20 @@ package ohm.softa.a08.filtering;
 
 import ohm.softa.a08.model.Meal;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class NotesFilter extends FilterBase {
-	@Override
-	protected boolean include(Meal m) {
-		return false;
+	private final String[] keywordsToExclude;
+
+	protected NotesFilter(String... keyWordsToExclude) {
+		this.keywordsToExclude = keyWordsToExclude;
 	}
 
 	@Override
-	public List<Meal> filter(List<Meal> meals) {
-		return null;
+	protected boolean include(Meal m) {
+
+		return Arrays.stream(keywordsToExclude)
+			.noneMatch(s -> m.getNotes().stream().anyMatch(s::equals));
+
 	}
 }

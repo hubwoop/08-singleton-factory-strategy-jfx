@@ -2,6 +2,8 @@ package ohm.softa.a08.controller;
 
 import com.google.gson.Gson;
 import ohm.softa.a08.api.OpenMensaAPI;
+import ohm.softa.a08.filtering.MealsFilter;
+import ohm.softa.a08.filtering.MealsFilterFactory;
 import ohm.softa.a08.model.Meal;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -17,15 +19,12 @@ import org.apache.logging.log4j.Logger;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Controller for main.fxml
@@ -47,6 +46,7 @@ public class MainController implements Initializable {
 	private final OpenMensaAPI api;
 	private final ObservableList<Meal> meals;
 	private final Gson gson;
+	private final MealsFilterFactory filterFactory;
 
 	/**
 	 * Binding of ChoiceBox UI element to filter for certain types of meals
@@ -74,7 +74,7 @@ public class MainController implements Initializable {
 	public MainController() {
 		meals = FXCollections.observableArrayList();
 		gson = new Gson();
-
+		filterFactory = new MealsFilterFactory();
 		/* create OpenMensaAPI instance */
 		api = OpenMensaAPIService.getInstance();
 	}
@@ -123,13 +123,12 @@ public class MainController implements Initializable {
 					}
 
 					meals.clear();
-
-					if ("Vegetarian".equals(filterChoiceBox.getValue()))
-						meals.addAll(response.body().stream()
-							.filter(Meal::isVegetarian)
-							.collect(Collectors.toList()));
-					else
-						meals.addAll(response.body());
+					String choice = filterChoiceBox.getValue();
+					if(choice == null) {
+						choice = "";
+					}
+					MealsFilter f = filterFactory.getStrategy(choice);
+					meals.addAll(f.filter(response.body()));
 				});
 			}
 

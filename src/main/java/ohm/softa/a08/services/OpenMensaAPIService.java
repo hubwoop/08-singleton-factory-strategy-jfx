@@ -17,7 +17,6 @@ public class OpenMensaAPIService implements OpenMensaAPI {
 	private static OpenMensaAPIService ourInstance = new OpenMensaAPIService();
 
 	private static OpenMensaAPI mensaApiInstance;
-	private static Gson gson;
 	private static DateFormat openMensaDateFormat;
 
 	public static OpenMensaAPIService getInstance() {
@@ -26,9 +25,8 @@ public class OpenMensaAPIService implements OpenMensaAPI {
 
 	private OpenMensaAPIService() {
 		openMensaDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-		gson = new Gson();
 		var retrofit = new Retrofit.Builder()
-			.addConverterFactory(GsonConverterFactory.create(gson))
+			.addConverterFactory(GsonConverterFactory.create())
 			.baseUrl("http://openmensa.org/api/v2/")
 			.build();
 		mensaApiInstance = retrofit.create(OpenMensaAPI.class);

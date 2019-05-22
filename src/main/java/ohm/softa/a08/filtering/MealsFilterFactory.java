@@ -1,16 +1,16 @@
 package ohm.softa.a08.filtering;
 
-import java.security.InvalidParameterException;
-
-public abstract class MealsFilterFactory {
-	public MealsFilter getStragy(String key) {
+public class MealsFilterFactory {
+	public MealsFilter getStrategy(String key) {
 		switch (key) {
-			case "category":
-				return new CategoryFilter();
-			case "notes":
-				return new NotesFilter();
+			case "Vegetarian":
+				return new CategoryFilter(true, "vegetarisch", "vegan", "sonstiges");
+			case "No soy":
+				return new NotesFilter("soja");
+			case "No pork":
+				return new CategoryFilter(false, "schwein");
 			default:
-				throw new InvalidParameterException();
+				return new NoFilter();
 		}
 	}
 }
